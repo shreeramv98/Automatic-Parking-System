@@ -1,0 +1,43 @@
+#define trigPin 9    // Ultrasonic sensor trigger pin
+#define echoPin 10   // Ultrasonic sensor echo pin
+#define ledPin 13    // LED to indicate parking safety
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);  // Initialize serial communication for debugging
+}
+
+void loop() {
+  long duration, distance;
+  
+  // Clear the trigger pin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  
+  // Send a 10us pulse to trigger the ultrasonic sensor
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Measure the time it takes for the echo to return
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate the distance in centimeters (you can also convert it to inches)
+  distance = (duration / 2) / 29.1; // Speed of sound is 343 meters/second or 29.1 microseconds per centimeter
+  
+  // Output the distance to the serial monitor (for debugging)
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  
+  // Check if the distance is less than a threshold (e.g., 30 cm) for parking safety
+  if (distance < 30) {
+    digitalWrite(ledPin, HIGH); // Turn on the LED to indicate unsafe parking
+  } else {
+    digitalWrite(ledPin, LOW);  // Turn off the LED to indicate safe parking
+  }
+  
+  // Add a delay before taking another reading (adjust as needed)
+  delay(500); // 500ms delay between readings
+}
